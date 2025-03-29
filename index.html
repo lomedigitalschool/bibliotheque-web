@@ -1,59 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>book list</title>
-</head>
-<body>
-
-    <style>
-        table {
-            width: 70%;
-            margin: 10% 15%;
-        }
-        thead{
-            background-color: gainsboro ;
-            /* border: 1px solid black; */
-
-        
-        }
-        th td{
-            border: 1px solid black;
-            text-align: center;
-
-        }
-
-    </style>
+  </head>
+  <body>
+    <a href="./add-book.html" class="button">ajouter un livre</a>
 
     <table>
-        <thead>
-            <tr>
-                <th><h3>title</h3></th>
-                <th><h3>athor</h3></th>
-                <th><h3>publish_at</h3></th>
-                <th><h3>available</h3></th>
-            </tr>
-            
-        </thead>
-        <tbody>
-            <tr>
-                <td>title</td>
-                <td>author</td>
-                <td>publish_at</td>
-                <td>available</td>
-
-            </tr>
-        </tbody>
+      <thead>
+        <tr>
+          <th><h3>ID</h3></th>
+          <th><h3>title</h3></th>
+          <th><h3>athor</h3></th>
+          <th><h3>publish_at</h3></th>
+          <th><h3>available</h3></th>
+        </tr>
+      </thead>
+      <tbody id="book-table"></tbody>
     </table>
+    <a href="./update-book.html" class="button button2">mise a jour</a>`
+    <button  id="delete" class="button button3"> Delete book</button>
+    <style>
+      table {
+        width: 70%;
+        margin: 10% 15%;
+      }
+      thead {
+        background-color: gainsboro;
+        /* border: 1px solid black; */
+      }
+      th td {
+        border: 1px solid black;
+        text-align: center;
+      }
+      .button {
+        text-decoration: none;
+        position: absolute;
+        right: 16%;
+        top: 10%;
+        background-color: burlywood;
+        padding: 10px;
+        border-radius: 4px;
+        color: black;
+        transition: 0.5s;
+      }
+      .button:hover {
+        background-color: green;
+        cursor: pointer;
+        
+      }
+
+      .button2{
+        
+        right: 10%;
+      }
+      .button3{
+        background: none;
+        border-color: red;
+        right: 4%;
+        
+      }
+      .button3:hover{
+        background-color: red;
+        color: white;
+      }
+    </style>
 
     <script>
-        fetch("http://localhost/bibliotheque-web/backend/index.php"){
-            .then
-        };
+      async function callApi() {
+        try {
+          // on recupere les infos depuis l api avec fetch et on stock les données dans datas
+          const response = await fetch(
+            "://localhost/bibliotheque-web/backend/index.php"
+          );
+          const datas = await response.json();
+          // selction de  l element avec son id stocker dans une variable pour une meilleur manipulation
+          const bookTable = document.querySelector("#book-table");
+          //on parcour datas pour recuperer les elements et en creer des elements html dynamiquement
+          datas.forEach((book) => {
+            const row = document.createElement("tr");
+                                    
+            row.innerHTML = `       
+                                    <td>${book.id}</td>
+                                    <td>${book.title}</td>
+                                    <td>${book.author}</td>
+                                    <td>${book.publish_at}</td>
+                                    <td>${book.available}</td>
+
+                
+                `;
+            //on ajoute les colonnes a l element parent qui est tbody avec l id book-table
+            bookTable.appendChild(row);
+          });
+        } catch (error) {
+          console.error("Erreur lors de la recuperation des donnees :", error);
+        }
+      }
+      // chargement des données au lancement de la page
+      window.onload = callApi;
 
 
+      
+
+   const deleteBook = document.querySelector("#delete");
+        deleteBook.addEventListener("click",
+         async function() {
+           
+           
+            const title = prompt("le titre du livre à supprimer");
+            
+           
+            const confirmation = confirm(`Vous etes sur de vouloir supprimer ${title}?`)
+         if(confirmation){
+            const bookData = {
+                "title" : title,
+                
+            };
+
+            try {
+                //on envoi avec la methode DELETE les données à l API sous forme de chaine de caractaire
+                const response = await fetch("http://localhost/bibliotheque-web/backend/delete-book.php", {
+                                    method : "DELETE",
+                                    headers : {
+                                        "Content-type" : "application/json"
+                                    },
+                                    body : JSON.stringify(bookData)
+                               
+                })
+                if (!response.ok) {
+                         throw new Error(`${response.status}`);
+                          exit;
+                                    
+                }else{
+                //   si la reponse est positive on affiche un message 
+                   alert('livre supprimé')
+                
+                }
+
+                
+            } catch (error) {
+                console.log("erreur lors de l envoi :" , error);
+            }
+
+        } 
+        })
     </script>
-    
-</body>
+  </body>
 </html>

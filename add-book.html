@@ -1,22 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Add book</title>
-</head>
-<body>
-    <form action="POST">
-        <h3>title of book</h3>
-        <input type="text" placeholder="" >
-        <h3>author</h3>
-        <input type="text" name="" id="" placeholder="">
-        <h3>publish at</h3>
-        <input type="date" name="" id="">
-        <button type="submit">add book</button>
+  </head>
+  <body>
+    
+    <form id="forma" class="form">
+      <h3>title of book</h3>
+      <input type="text" placeholder="title" id="title" />
+      <h3>author</h3>
+      <input type="text" name="" id="" placeholder="author"  id="author"/>
+      <h3>publish at</h3>
+      <input type="date" name="" id="date" />
+      <button type="submit" class="button">add book</button>
     </form>
+
+
+
+    <style>
+      .form {
+        background-color: beige;
+        position: relative;
+        right: 10vw;
+        left: 20vw;
+        top: 10vw;
+    
+        width: 30vw;
+        padding: 10%;
+        border-radius: 4px;
+        box-shadow: -7px 3px 53px 0px rgba(171,171,171,1);
+      }
+      h3{
+        color: rgba(171,171,171,1);
+      }
+      input {
+        position: relative;
+        width: 25vw;
+        border-radius: 4px;
+        padding: 5px;
+        border-style: groove;
+        transition: 1s;
+      }
+      .button {
+        text-decoration: none;
+        background-color: burlywood;
+        padding: 10px;
+        border-radius: 4px;
+        color: black;
+        transition: 0.5s;
+        border-style: none;
+        cursor: pointer;
+        margin-left: 10px;
+        margin-top: 10px;
+      }
+      .button:hover {
+        background-color: blueviolet;
+      }
+      .succes{
+        background-color: rgb(95, 221, 101);
+        border-color: rgb(22, 143, 28);
+        border-radius: 4px;
+        padding: 10%;
+        margin-bottom: 10%;
+      }
+      
+    </style>
+
+
     <script>
-        
+        //on observe si le formulaire est soumis 
+        document.querySelector("#forma").addEventListener("submit",
+             async function(event) {
+                // on evite le rechargement de la page
+                event.preventDefault();
+                //stockage des données  du formulaire 
+                const title = document.querySelector("#title").value;
+                const author = document.querySelector("#author").value;
+                const publish_at = document.querySelector("#date").value;
+
+                //on les mets dans un objet
+                const bookData = {
+                    "title" : title,
+                    "author" : author,
+                    "publish_at" : publish_at
+                };
+
+                try {
+                    //on envoi avec la methode POST les données à l API sous forme de chaine de caractaire
+                    const response = await fetch("http://localhost/bibliotheque-web/backend/add-book.php", {
+                                        method : "POST",
+                                        headers : {
+                                            "Content-type" : "application/json"
+                                        },
+                                        body : JSON.stringify(bookData)
+                                   
+                    })
+                    if (!response.ok) {
+                                        throw new Error(`${response.status}`);
+                                        
+                    }else{
+                      //si la reponse est positive on affiche un message 
+                        const message = document.querySelector("body").innerHTML(
+                            <p class="succes">livre ajouté</p>
+                         );
+
+                         document.appendChild(message);
+                    
+                    }
+
+                    
+                } catch (error) {
+                    console.log("erreur lors de l envoi :" , error);
+                }
+
+                
+             }
+        )
+
     </script>
-</body>
+  </body>
 </html>

@@ -6,16 +6,110 @@
     <title>Update book info</title>
 </head>
 <body>
-    <form action="PUT">
-        <h3>title of book</h3>
-        <input type="text" placeholder="" >
+    <form action="PUT" class="form" id="formu">
+        <h3>id du livre</h3>
+        <input type="number" placeholder="id du livre" id="id" >
         <h3>new title</h3>
-        <input type="text" placeholder="">
+        <input type="text" placeholder="" id="newTitle">
         <h3>author</h3>
-        <input type="text" name="" id="" placeholder="">
+        <input type="text" name="" id="author" placeholder="">
         <h3>publish at</h3>
-        <input type="date" name="" id="">
-        <button type="submit">update</button>
+        <input type="date" name="" id="newDate">
+        <button type="submit" class="button">update</button>
     </form>
+    <style>
+        .form {
+          background-color: beige;
+          position: relative;
+          right: 10vw;
+          left: 20vw;
+          top: 10vw;
+      
+          width: 30vw;
+          padding: 10%;
+          border-radius: 4px;
+          box-shadow: -7px 3px 53px 0px rgba(171,171,171,1);
+        }
+        h3{
+          color: rgba(171,171,171,1);
+        }
+        input {
+          position: relative;
+          width: 25vw;
+          border-radius: 4px;
+          padding: 5px;
+          border-style: groove;
+          transition: 1s;
+        }
+        .button {
+          text-decoration: none;
+          background-color: burlywood;
+          padding: 10px;
+          border-radius: 4px;
+          color: black;
+          transition: 0.5s;
+          border-style: none;
+          cursor: pointer;
+          margin-left: 10px;
+          margin-top: 10px;
+        }
+        .button:hover {
+          background-color: blueviolet;
+        }
+      </style>
+
+<script>
+    //on observe si le formulaire est soumis 
+    document.querySelector("#formu").addEventListener("submit",
+         async function(event) {
+            // on evite le rechargement de la page
+            event.preventDefault();
+            //stockage des données  du formulaire 
+            const id = document.querySelector("#id").value;
+            const title = document.querySelector("#newTitle").value;
+            const author = document.querySelector("#author").value;
+            const publish_at = document.querySelector("#newDate").value;
+
+            //on les mets dans un objet
+            const bookData = {
+                "id" : id,
+                "title" : title,
+                "author" : author,
+                "publish_at" : publish_at
+            };
+
+            try {
+                //on envoi avec la methode POST les données à l API sous forme de chaine de caractaire
+                const response = await fetch("http://localhost/bibliotheque-web/backend/update-book.php", {
+                                    method : "PUT",
+                                    headers : {
+                                        "Content-type" : "application/json"
+                                    },
+                                    body : JSON.stringify(bookData)
+                               
+                })
+                if (!response.ok) {
+                                    throw new Error(`${response.status}`);
+                                    
+                }else{
+                  //si la reponse est positive on affiche un message 
+                    const message = document.querySelector("body").innerHTML(
+                        <p class="succes">livre modifie</p>
+                     );
+
+                     document.appendChild(message);
+                
+                }
+
+                
+            } catch (error) {
+                console.log("erreur lors de l envoi :" , error);
+            }
+
+            
+         }
+    )
+
+</script>
 </body>
 </html>

@@ -24,14 +24,14 @@ if($_SERVER['REQUEST_METHOD'] === "GET")
 
             echo json_encode($books);
         }else{
-            echo json_encode(["Message" => 'aucun livre trouvé']);
+            echo json_encode(["Message" => 'aucun livre trouve']);
 
         }
 
 
 
 }else{
-    echo json_encode(["Message" => 'la methode n\'est pas authorisé']);
+    echo json_encode(["Message" => 'la methode n\'est pas authorise']);
 }
 
  
